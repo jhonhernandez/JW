@@ -4,13 +4,13 @@ require_once 'lib/nusoap.php';
 
 
 
-$miURL = 'http://127.0.0.1/JhonWS/JW';
+$miURL = 'http://127.0.0.1/JhonWS/JW'; //Directorio en donde se encuentra ubicado el webservice
 $server = new soap_server();
 $server->configureWSDL("producto", $miURL);
 $server->wsdl->schemaTargetNamespace = $miURL;
 
-$server->register("enviar_respuesta", array("parametro" => "xsd:string"), array("return" => "xsd:string"), $miURL
-);
+#Registro del metodo enviar_respuesta#
+$server->register("enviar_respuesta", array("parametro" => "xsd:string"), array("return" => "xsd:string"), $miURL);
 
 /**
  * enviar_respuesta();
@@ -28,15 +28,21 @@ function enviar_respuesta($parametro) {
     }
 }
 
-/*
-  Ejemplo 2: guardo datos que recibo de cualquier dispositivo en la base de datos
- */
-
+#Registro del Segundo metodo registrar_datos#
 $server->register('registrar_datos', // Nombre de la funcion
         array('Cedula' => 'xsd:string', 'Nombre' => 'xsd:string', 'Apellidos' => 'xsd:string'), // Parametros de entrada
         array('return' => 'xsd:string'), // Parametros de salida
         $miURL);
 
+/**
+ * registrar_datos();
+ * 
+ * Ejemplo 2: guardo datos que recibo de cualquier dispositivo en la base de datos
+ * @param varchar $parametro Primer parametro a insertar
+ * @param varchar $parametro2 Segundo parametro a insertar
+ * @param varchar $parametro3 Tercer parametro a insertar
+ * @return varchar Retorna mensaje de confirmacion, si en caso de que la insercion fue satisfactoria y no en caso de que ocurra lo contrario
+ */
 function registrar_datos($parametro, $parametro2, $parametro3) {
 
 //recibo el dato enviado por el celular, ahora pongo un mensaje en la variable_accion
@@ -61,16 +67,19 @@ function registrar_datos($parametro, $parametro2, $parametro3) {
     return new soapval('return', 'xsd:string', $indicador_registro);
 }
 
-/*
-
-  Ejemplo 3: Busco los datos a traves de la cedula que recibo como parametro
-
- */
+#Registro del Tercer metodo buscar_datos#
 $server->register('buscar_datos', // Nombre de la funcion
         array('cedula' => 'xsd:string'), // Parametros de entrada
         array('return' => 'xsd:string'), // Parametros de salida
         $miURL);
 
+/**
+ * buscar_datos();
+ * 
+ * Ejemplo 3: Busco la informacion en de un usuario especifico por su cedula
+ * @param varchar $cedula Numero de identificacion a consultar
+ * @return varchar Retorna mensaje de confirmacion, si en caso de que la insercion fue satisfactoria y no en caso de que ocurra lo contrario
+ */
 function buscar_datos($cedula) {
 
 //recibo el dato enviado por el celular, ahora pongo un mensaje en la variable_accion
@@ -93,16 +102,19 @@ function buscar_datos($cedula) {
     return new soapval('return', 'xsd:string', $encontro);
 }
 
-/*
-
-  Ejemplo 4: Busco los datos a traves de la cedula que recibo como parametro
-
- */
+#Registro del metodo mostrar_datos#
 $server->register('mostrar_datos', // Nombre de la funcion
         array('cedula' => 'xsd:string'), // Parametros de entrada
         array('cedula' => 'tns:Cliente'), // Parametros de salida
         $miURL, '', '', '', 'Muestra la informacion del usuario por cedula');
 
+/**
+ * mostrar_datos();
+ * 
+ * Ejemplo 4: Busco la informacion en de un usuario especifico por su cedula
+ * @param varchar $cedula Numero de identificacion a consultar
+ * @return varchar Retorna la informacion del usuario consultado en caso contrario retorna el mensaje correspondiente
+ */
 function mostrar_datos($cedula) {
 
 //recibo el dato enviado por el celular, ahora pongo un mensaje en la variable_accion
@@ -122,7 +134,7 @@ function mostrar_datos($cedula) {
     while ($f = mysql_fetch_row($result)) { // Convertimos el resultado en un vector
         $encontro = $f[1] . ' ' . $f[2] . ' ' . $f[3];
     }
-    
+
     //return new soapval('cedula', 'xsd:string', $encontro);
     return new soapval('cedula', 'xsd:string', $encontro);
 }
