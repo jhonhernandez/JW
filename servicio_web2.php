@@ -4,7 +4,7 @@ require_once 'lib/nusoap.php';
 
 
 
-$miURL = 'http://127.0.0.1/JhonWS';
+$miURL = 'http://127.0.0.1/JhonWS/JW';
 $server = new soap_server();
 $server->configureWSDL("producto", $miURL);
 $server->wsdl->schemaTargetNamespace = $miURL;
@@ -107,7 +107,7 @@ function mostrar_datos($cedula) {
 
 //recibo el dato enviado por el celular, ahora pongo un mensaje en la variable_accion
 
-    $encontro = "No";
+    $encontro = "El Usuario No Existe ";
 
     include ("funciones.inc"); // llama el archivo funciones.inc donde le hace la conexion con la BD
 
@@ -122,6 +122,8 @@ function mostrar_datos($cedula) {
     while ($f = mysql_fetch_row($result)) { // Convertimos el resultado en un vector
         $encontro = $f[1] . ' ' . $f[2] . ' ' . $f[3];
     }
+    
+    //return new soapval('cedula', 'xsd:string', $encontro);
     return new soapval('cedula', 'xsd:string', $encontro);
 }
 
