@@ -113,7 +113,7 @@ $server->register('mostrar_datos', // Nombre de la funcion
  * 
  * Ejemplo 4: Busco la informacion en de un usuario especifico por su cedula
  * @param varchar $cedula Numero de identificacion a consultar
- * @return varchar Retorna la informacion del usuario consultado en caso contrario retorna el mensaje correspondiente
+ * @return varchar Retorna la informacion del usuario consultado, en caso contrario retorna el mensaje correspondiente
  */
 function mostrar_datos($cedula) {
 
@@ -137,6 +137,53 @@ function mostrar_datos($cedula) {
 
     //return new soapval('cedula', 'xsd:string', $encontro);
     return new soapval('cedula', 'xsd:string', $encontro);
+}
+
+#Registro del metodo mostrar_datos#
+$server->wsdl->addComplexType(
+        'array_php', 'complexType', 'struct', 'all', '', array('Cedula' => array('name' => 'Cedula', 'type' => 'xsd:string'),
+    'Nombre' => array('name' => 'Nombre', 'type' => 'xsd:string'),
+    'Apellido' => array('name' => 'Apellido', 'type' => 'xsd:string')));
+
+
+$server->wsdl->addComplexType('return_array_php', 'complexType', 'array', 'all', 'SOAP-ENC:Array', array(), array(array('ref' => 'SOAP-ENC:arrayType', 'wsdl:arrayType' => 'tns:array_php[]')), 'tns:array_php');
+
+$server->register("mostrar_mas_de_undato", array("parametro" => "xsd:string"), array("returnArray" => "tns:return_array_php"), $miURL, $miURL . '#get_data', 'rpc', 'encoded', 'Returns array data in php web service');
+
+/**
+ * mostrar_mas_de_undato();
+ * 
+ * Ejemplo 5: Busco la informacion en de un usuario especifico por su cedula
+ * @param varchar $cedula Numero de identificacion a consultar
+ * @return varchar Retorna la informacion del usuario consultado, en caso contrario retorna el mensaje correspondiente
+ */
+function mostrar_mas_de_undato($cedula) {
+
+
+//recibo el dato enviado por el celular, ahora pongo un mensaje en la variable_accion
+
+    $encontro = "El Usuario No Existe ";
+
+    include ("funciones.inc"); // llama el archivo funciones.inc donde le hace la conexion con la BD
+
+    $link = conectar(); // Se llama la funcion conectar(); que establece la conexi?n
+
+    mysql_select_db("jhon_webservices", $link); //Fuci?nque seleciona la base de datos
+
+    $recibe = "select * from datos where cedula='$cedula';"; //string que almacena l aconsulta a ejecutar
+
+    $result = mysql_query($recibe, $link); //ejecuta la consulta a la base de datos
+
+    while ($f = mysql_fetch_row($result)) { // Convertimos el resultado en un vector
+        $cedula = $f[1];
+        $nombre = $f[2];
+        $apellido = $f[3];
+        $encontro = $cedula;
+        $arreglo[] = array('Cedula' => $cedula, 'Nombre' => $nombre, 'Apellido' => $apellido);
+    }
+
+    //return new soapval("cedula", "xsd:string", $encontro);
+    return $arreglo;
 }
 
 if (!isset($HTTP_RAW_POST_DATA)) {

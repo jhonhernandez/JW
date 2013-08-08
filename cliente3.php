@@ -11,7 +11,7 @@ if ($err) {
     echo '<strong>' . $err . '</strong>';
 }
 
-$param = array('cedula' => '7988879');
+$param = array('cedula' => '79878879');
 $result = $client->call('mostrar_datos', $param);
 
 if ($client->fault) {

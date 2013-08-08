@@ -1,5 +1,5 @@
 <?php
-
+//Aqui
 require_once ('lib/nusoap.php');
 
 $url = "http://192.168.0.152/JhonWS/JW/servicio_web2.php?wsdl";
@@ -10,11 +10,9 @@ $err = $client->getError();
 if ($err) {
     echo '<strong>' . $err . '</strong>';
 }
-//$mensaje = ' Mensaje De Prueba!';
-$mensaje = '';
 
-$param = array('parametro' => $mensaje);
-$result = $client->call('enviar_respuesta', $param);
+$param = array('cedula' => '79878879');
+$result = $client->call('mostrar_mas_de_undato', $param);
 
 if ($client->fault) {
     echo '<h2>Fault</h2><pre>';
