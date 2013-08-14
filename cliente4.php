@@ -1,5 +1,5 @@
 <?php
-//Aqui
+
 require_once ('lib/nusoap.php');
 
 $url = "http://192.168.0.152/JhonWS/JW/servicio_web2.php?wsdl";
